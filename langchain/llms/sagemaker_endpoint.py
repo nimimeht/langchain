@@ -40,10 +40,19 @@ class SagemakerEndpoint(LLM, BaseModel):
             credentials_profile_name = (
                 "default"
             )
+            content_type = (
+                "application/json"
+            )
+            def model_input_transform_fn(prompt, model_kwargs):
+                parameter_payload = {"inputs": prompt, "parameters": model_kwargs}
+                return json.dumps(parameter_payload).encode("utf-8")
+
             se = SagemakerEndpoint(
                 endpoint_name=endpoint_name,
                 region_name=region_name,
-                credentials_profile_name=credentials_profile_name
+                credentials_profile_name=credentials_profile_name,
+                content_type="application/json",
+                model_input_transform_fn=model_input_transform_fn
             )
     """
     client: Any  #: :meta private:
